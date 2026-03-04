@@ -1,12 +1,13 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { View, Platform } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import DashboardScreen from '@features/jobs/screens/DashboardScreen';
 import MyJobsScreen from '@features/jobs/screens/MyJobsScreen';
 import EarningsScreen from '@features/earnings/screens/EarningsScreen';
 import ProfileScreen from '@features/profile/screens/ProfileScreen';
 import { useTheme } from '@hooks/useTheme';
-import { COLORS } from '@utils/theme';
+import { COLORS, RADIUS } from '@utils/theme';
 
 export type MainTabParamList = {
     Dashboard: undefined;
@@ -24,15 +25,27 @@ export const MainTabNavigator = () => {
         <Tab.Navigator
             screenOptions={({ route }) => ({
                 headerShown: false,
+                tabBarShowLabel: true,
+                tabBarActiveTintColor: COLORS.primary,
+                tabBarInactiveTintColor: theme.onSurfaceVariant,
                 tabBarStyle: {
                     backgroundColor: theme.surface,
                     borderTopColor: theme.border,
-                    height: 60,
-                    paddingBottom: 8,
-                    paddingTop: 8,
+                    borderTopWidth: 1,
+                    height: Platform.OS === 'ios' ? 92 : 72,
+                    paddingBottom: Platform.OS === 'ios' ? 32 : 12,
+                    paddingTop: 12,
+                    elevation: 10,
+                    shadowColor: '#000',
+                    shadowOffset: { width: 0, height: -4 },
+                    shadowOpacity: 0.08,
+                    shadowRadius: 12,
                 },
-                tabBarActiveTintColor: COLORS.primary,
-                tabBarInactiveTintColor: theme.onSurfaceVariant,
+                tabBarLabelStyle: {
+                    fontSize: 11,
+                    fontWeight: '600',
+                    marginTop: -2,
+                },
                 tabBarIcon: ({ color, size, focused }) => {
                     let iconName: React.ComponentProps<typeof Ionicons>['name'];
 
@@ -48,7 +61,22 @@ export const MainTabNavigator = () => {
                         iconName = 'help-circle';
                     }
 
-                    return <Ionicons name={iconName} size={size} color={color} />;
+                    return (
+                        <View
+                            style={[
+                                {
+                                    width: 48,
+                                    height: 32,
+                                    borderRadius: RADIUS.lg,
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                },
+                                focused && { backgroundColor: `${COLORS.primary}15` },
+                            ]}
+                        >
+                            <Ionicons name={iconName} size={24} color={color} />
+                        </View>
+                    );
                 },
             })}
         >
